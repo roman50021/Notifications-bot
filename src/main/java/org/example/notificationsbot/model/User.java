@@ -1,9 +1,6 @@
 package org.example.notificationsbot.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.example.notificationsbot.model.contract.AbstractEntity;
 
@@ -24,6 +21,9 @@ public class User extends AbstractEntity {
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
+
+    @Enumerated(EnumType.STRING)
+    Action action;
 
     @Column(name = "registered_at", nullable = false)
     private LocalDateTime registeredAt;
