@@ -20,7 +20,7 @@ public final class Bot extends TelegramWebhookBot {
 
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        return updateDispatcher.distribute(update);
+        return updateDispatcher.distribute(update, this);
     }
 
     @Override
