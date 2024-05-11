@@ -24,8 +24,6 @@ public class Notification extends AbstractEntity {
     @Column(name = "seconds")
     Long seconds;
 
-
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;

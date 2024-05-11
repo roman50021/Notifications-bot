@@ -9,6 +9,7 @@ import org.example.notificationsbot.service.factory.KeyboardFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -28,26 +29,13 @@ public class MainManager extends AbstractManager implements CommandListener, Que
 
     @Override
     public BotApiMethod<?> mainMenu(CallbackQuery query, Bot bot) {
-        return null;
-    }
-
-    @Override
-    public BotApiMethod<?> answerCommand(Message message, Bot bot) {
-        return greetings(message.getChatId());
-    }
-
-    @Override
-    public BotApiMethod<?> answerQuery(CallbackQuery query, String[] words, Bot bot) {
-        return null;
-    }
-
-    private BotApiMethod<?> greetings(Long chatId){
-        return SendMessage.builder()
-                .chatId(chatId)
-                .text("Hello my dear friend!")
+        return EditMessageText.builder()
+                .chatId(query.getMessage().getChatId())
+                .messageId(query.getMessage().getMessageId())
+                .text("Приветствую, дорогой друг!")
                 .replyMarkup(
                         keyboardFactory.createInlineKeyboard(
-                                List.of("Reminders"),
+                                List.of("Напоминалки"),
                                 List.of(1),
                                 List.of(notification_main.name())
                         )
@@ -55,5 +43,24 @@ public class MainManager extends AbstractManager implements CommandListener, Que
                 .build();
     }
 
+    @Override
+    public BotApiMethod<?> answerCommand(Message message, Bot bot) {
+        return SendMessage.builder()
+                .chatId(message.getChatId())
+                .text("Приветствую, дорогой друг!")
+                .replyMarkup(
+                        keyboardFactory.createInlineKeyboard(
+                                List.of("Напоминалки"),
+                                List.of(1),
+                                List.of(notification_main.name())
+                        )
+                )
+                .build();
+    }
+
+    @Override
+    public BotApiMethod<?> answerQuery(CallbackQuery query, String[] words, Bot bot) {
+        return mainMenu(query, bot);
+    }
 
 }

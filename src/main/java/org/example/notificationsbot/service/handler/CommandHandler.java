@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 @Service
 @RequiredArgsConstructor
 public class CommandHandler extends AbstractHandler {
-    private  final MainManager mainManager;
+    private final MainManager mainManager;
     @Override
     public BotApiMethod<?> answer(BotApiObject object, Bot bot) {
         var message = (Message) object;

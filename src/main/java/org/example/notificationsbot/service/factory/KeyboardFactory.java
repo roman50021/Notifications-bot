@@ -26,6 +26,7 @@ public class KeyboardFactory {
                 .reduce(0, Integer::sum)
         ){
             log.warn("Wrong arguments: [" + text + "," + data + "," + configuration + "]");
+            return null;
         }
         List<List<InlineKeyboardButton>> keyboard = getInlineKeyboard(text, configuration, data);
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
