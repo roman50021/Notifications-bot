@@ -50,7 +50,7 @@ public class NotificationContainer implements Runnable{
                 .chatId(chatId)
                 .text(
                         "⚡\uFE0F Reminder : " + notification.getTitle() + "\n"
-                        +"❗\\uFE0F " + notification.getDescription()
+                        +"❗ " + notification.getDescription()
                 )
                 .build();
     }

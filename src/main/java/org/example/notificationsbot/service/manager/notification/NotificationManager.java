@@ -129,7 +129,7 @@ public class NotificationManager extends AbstractManager
         var pattern = Pattern.compile("^[0-9]{2}:[0-9]{2}:[0-9]{2}$").matcher(messageText);
         if (pattern.matches()) {
             var nums = messageText.split(":");
-            long seconds = Long.parseLong(nums[0]) * 3600 + Long.parseLong(nums[1]) * 60 + Long.parseLong(nums[2]);
+            int seconds = Integer.parseInt(nums[0]) * 3600 + Integer.parseInt(nums[1]) * 60 + Integer.parseInt(nums[2]);
             notification.setSeconds(seconds);
         } else {
             return SendMessage.builder()
@@ -177,7 +177,7 @@ public class NotificationManager extends AbstractManager
             case 4 -> {
                 switch (words[1]) {
                     case "edit" -> {
-                        switch (words[2]){
+                        switch (words[2]) {
                             case "title" -> {
                                 return askTitle(query, words[3]);
                             }
@@ -245,11 +245,11 @@ public class NotificationManager extends AbstractManager
 
     private BotApiMethod<?> askSeconds(CallbackQuery query, String id) {
         var user = userRepository.findByChatId(query.getMessage().getChatId());
-        user.setAction(Action.SENDING_TITLE);
+        user.setAction(Action.SENDING_TIME);
         user.setCurrentNotification(UUID.fromString(id));
         userRepository.save(user);
         return EditMessageText.builder()
-                .text("⚡\uFE0F Enter the time after which you would like to receive the reminder\nFormat - HH:MM:SS\nFor example - (01.:30:00) - one and a half hours")
+                .text("⚡\uFE0F Enter the time after which you would like to receive the reminder\nFormat - HH:MM:SS\nFor example - (01:30:00) - one and a half hours")
                 .messageId(query.getMessage().getMessageId())
                 .chatId(query.getMessage().getChatId())
                 .replyMarkup(
@@ -280,11 +280,11 @@ public class NotificationManager extends AbstractManager
                 )
                 .build();
     }
-    
+
 
     private BotApiMethod<?> askTitle(CallbackQuery query, String id) {
         var user = userRepository.findByChatId(query.getMessage().getChatId());
-        user.setAction(Action.SENDING_TIME);
+        user.setAction(Action.SENDING_TITLE);
         user.setCurrentNotification(UUID.fromString(id));
         userRepository.save(user);
         return EditMessageText.builder()
@@ -293,29 +293,27 @@ public class NotificationManager extends AbstractManager
                 .chatId(query.getMessage().getChatId())
                 .replyMarkup(
                         keyboardFactory.createInlineKeyboard(
-                                List.of("Back"),
+                                List.of("\uD83D\uDD19 Назад"),
                                 List.of(1),
                                 List.of(notification_back_ + id)
                         )
                 )
                 .build();
     }
-    
+
 
     private BotApiMethod<?> newNotification(CallbackQuery query, Bot bot) {
-
         var user = userRepository.findByChatId(query.getMessage().getChatId());
         String id = String.valueOf(notificationRepository.save(
                 Notification.builder()
                         .user(user)
                         .status(Status.BUILDING)
-                .build()
+                        .build()
         ).getId());
-        log.info("1");
         return EditMessageText.builder()
                 .chatId(query.getMessage().getChatId())
                 .messageId(query.getMessage().getMessageId())
-                .text("Setting notification")
+                .text("Настройте уведомление")
                 .replyMarkup(editNotificationReplyMarkup(id))
                 .build();
     }
@@ -344,16 +342,14 @@ public class NotificationManager extends AbstractManager
         }
         text.add("Main");
         text.add("Done");
-        log.info("3 = " + text.size());
-        log.info("4 = " + id);
 
         return keyboardFactory.createInlineKeyboard(
                 text,
-                List.of(2,1,2),
-                List.of(notification_edit_title_.name() + id,notification_edit_time_.name() + id,
+                List.of(2, 1, 2),
+                List.of(
+                        notification_edit_title_.name() + id, notification_edit_time_.name() + id,
                         notification_edit_d_.name() + id,
-                        main.name(),
-                        notification_done_.name() + id
+                        main.name(), notification_done_.name() + id
                 )
         );
     }
